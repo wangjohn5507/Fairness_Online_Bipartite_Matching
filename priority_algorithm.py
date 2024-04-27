@@ -194,7 +194,7 @@ def main(groups, agents, vertex):
 if __name__ == "__main__":
     groups = 4
     agents = 100
-    vertex = 200
+    vertex = 20
     data_p, data_g = main(groups, agents, vertex)
-    draw_plot(data_p, data_g)
+    draw_plot(data_p, data_g, 'Metrics of Two Algorithms', 'combined_metrics_visualization_20.png')
 

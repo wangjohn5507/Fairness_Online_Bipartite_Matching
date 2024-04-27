@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-def draw_plot(data1, data2):
+def draw_plot(data1, data2, title, name):
 
     # Extracting keys and values for the plot
     groups = list(data1.keys())
@@ -44,11 +44,11 @@ def draw_plot(data1, data2):
     # Setting chart details
     ax.set_xlabel('Metric')
     ax.set_ylabel('Value')
-    ax.set_title('Combined Metrics Visualization')
+    ax.set_title(title)
     ax.set_xticks(index)
     ax.set_xticklabels(group_labels)
     ax.legend()
 
     plt.tight_layout()
     plt.show()
-    fig.savefig('combined_metrics_visualization.png')
+    fig.savefig(name)
