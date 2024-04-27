@@ -2,23 +2,27 @@ import heapq
 import copy
 from collections import defaultdict
 import random
+import matplotlib.pyplot as plt
+import numpy as np
+from draw_plot import draw_plot
 
-random.seed(42)
+
+random.seed(36)
 
 def update_heap(heap, old_item, new_item):
     """
     Update an item in the heap from old_item to new_item and re-heapify.
-    
+
     :param heap: List representing the heap.
     :param old_item: The item in the heap to be updated.
     :param new_item: The new value for the item.
     """
     # Find the index of the old item
     index = heap.index(old_item)  # This might raise ValueError if the item is not found
-    
+
     # Replace the old item with the new item
     heap[index] = new_item
-    
+
     # Since we've manually replaced an item, the heap property might be violated
     # We need to re-heapify the heap
     heapq.heapify(heap)
@@ -26,7 +30,7 @@ def update_heap(heap, old_item, new_item):
 def find_key_by_value(dictionary, search_value):
     """
     Find the key in the dictionary corresponding to the given value.
-    
+
     :param dictionary: The dictionary to search.
     :param search_value: The value for which to find the corresponding key.
     :return: The key corresponding to the search_value or None if not found.
@@ -47,7 +51,7 @@ class OnlineBipartiteMatcher_Priority:
         # Map to track the available vertices for matching
         self.available_vertices = set()
         self.group_weight = defaultdict(list)
-        
+
     def add_group(self, group_id, initial_priority=0):
         # Each group entry in the heap is a tuple (priority, group_id)
         heapq.heappush(self.priority_queue, (initial_priority, group_id))
@@ -67,7 +71,7 @@ class OnlineBipartiteMatcher_Priority:
         while fixed_priority_queue:
             # Get the group with the lowest priority value
             priority, group_id = heapq.heappop(fixed_priority_queue)
-            
+
 
             # Sort adjacent vertices by edge weight in descending order
             sorted_vertices = sorted(adjacent_vertices, key=lambda x: x[1], reverse=True)
@@ -104,7 +108,7 @@ class OnlineBipartiteMatcher_Priority:
         if not matched:
             # No match found, the vertex v is dropped
             print(f"Vertex {v} could not be matched and was dropped")
-            
+
         print(self.priority_queue)
 
 class OnlineBipartiteMatcher_Greedy:
@@ -154,7 +158,7 @@ class OnlineBipartiteMatcher_Greedy:
         print(self.group_weight)
 
 
-        
+
 
 def main(groups, agents, vertex):
     matcherP = OnlineBipartiteMatcher_Priority()
@@ -166,9 +170,9 @@ def main(groups, agents, vertex):
 
     # Simulate adding vertices to groups
     for i in range(agents):
-      print('u'+str(i+1), str(i/(agents/2)+1))
-      matcherP.add_vertex_to_group(f'u{i+1}', f'{int(i/(agents/2)+1)}')
-      matcherG.add_vertex_to_group(f'u{i+1}', f'{int(i/(agents/2)+1)}')
+      # print('u'+str(i+1), int(i/(agents/groups)+1))
+      matcherP.add_vertex_to_group(f'u{i+1}', f'{int(i/(agents/groups)+1)}')
+      matcherG.add_vertex_to_group(f'u{i+1}', f'{int(i/(agents/groups)+1)}')
 
     # New vertex arrives with edges and their weights
     for i in range(vertex):
@@ -177,14 +181,20 @@ def main(groups, agents, vertex):
       # Randomize the total number of pairs
       num_pairs = random.randint(1, agents)
       # Generate the list of vertex-weight pairs
-      vertex_list = [(labels[j], random.randint(1, 10)) for j in range(num_pairs)]
+      vertex_list = [(labels[j], random.randint(1, 100)) for j in range(num_pairs)]
       print(f'v{i+1}', vertex_list)
       matcherP.process_new_vertex(f'v{i+1}', vertex_list)
       matcherG.process_new_vertex(f'v{i+1}', vertex_list)
     
+    data_p = matcherP.group_weight
+    data_g = matcherG.group_weight
+
+    return data_p, data_g
 
 if __name__ == "__main__":
-    groups = 2
-    agents = 6
-    vertex = 10
-    main(groups, agents, vertex)
+    groups = 4
+    agents = 100
+    vertex = 200
+    data_p, data_g = main(groups, agents, vertex)
+    draw_plot(data_p, data_g)
+
